@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ShopScript : MonoBehaviour
 {
     public GameObject[] characters_1, characters_2;
     public GameObject BuyButton;
     int index;
+    public TextMeshProUGUI tmp;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,11 +33,13 @@ public class ShopScript : MonoBehaviour
     public void BuyCharacter() {
         if(PlayerPrefs.GetInt("box", 0) >= 50) {
             PlayerPrefs.SetInt("box", PlayerPrefs.GetInt("box", 0) - 50);
+            tmp.text = PlayerPrefs.GetInt("box", 0).ToString();
             PlayerPrefs.SetInt("char_" + index.ToString(), 1);
             PlayerPrefs.SetInt("char", index);
             for(int j = 0; j < characters_1.Length; j++) characters_1[j].SetActive(false);
             characters_1[index].SetActive(true);
             BuyButton.SetActive(false);
+            AudioController.AwardSound();
         }
     }
 }

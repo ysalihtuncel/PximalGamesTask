@@ -36,75 +36,82 @@ public class EndGameScript : MonoBehaviour
     {
         if (_update)
         {
-            #if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.UpArrow)) {
-                palletController.PalletsToTruck(_count);
-                PlayAnim(_count);
-                _count++;
-                if(particle.isPlaying) {
-                    particle.Stop();
-                }
-                particle.Play();
-                AudioController.HitSound();
-                PlayerPrefs.SetInt("box", PlayerPrefs.GetInt("box", 0)+1);
-                tmp.text = PlayerPrefs.GetInt("box", 0).ToString();
-                Debug.Log("count: " + _count);
-                Debug.Log("box count: " + PlayerPrefs.GetInt("box", 0));
-                if (_count >= palletCount)
-                {
-                    animator.SetBool("IsIdle", false);
-                    animator.SetBool("IsDancing", true);
-                    StartCoroutine(TriggerUpdate());
-                }
-                
-                
+            if (palletCount == 0) {
+                StartCoroutine(FailedLevel());
             }
+            else {
 
-            #elif UNITY_ANDROID
-            if (Input.touchCount > 0 && !touched)
-            {
-                switch (Input.GetTouch(0).phase)
-                {
-                    //When a touch has first been detected, change the message and record the starting position
-                    case TouchPhase.Began:
-                        touched = true;
-                        break;
-
-                    case TouchPhase.Ended:
-                        // Report that the touch has ended when it ends
-                        touched = false;
-                        break;
-                    case TouchPhase.Stationary:
-                        touched = false;
-                        break;
-                    case TouchPhase.Moved:
-                        touched = false;
-                        break;
-                }
-                //palletController.PalletsToTruck(_count);
-                if (_count < palletCount ) {
-                    StartCoroutine(BoxIEnumerator(_count));
+            
+                #if UNITY_EDITOR
+                if (Input.GetKeyDown(KeyCode.UpArrow)) {
+                    palletController.PalletsToTruck(_count);
                     PlayAnim(_count);
-                    PlayerPrefs.SetInt("box", PlayerPrefs.GetInt("box", 0)+1);
-                    tmp.text = PlayerPrefs.GetInt("box", 0).ToString();
+                    _count++;
                     if(particle.isPlaying) {
                         particle.Stop();
                     }
                     particle.Play();
                     AudioController.HitSound();
-                    _count++;
-                    if (_count == palletCount) {
+                    PlayerPrefs.SetInt("box", PlayerPrefs.GetInt("box", 0)+1);
+                    tmp.text = PlayerPrefs.GetInt("box", 0).ToString();
+                    Debug.Log("count: " + _count);
+                    Debug.Log("box count: " + PlayerPrefs.GetInt("box", 0));
+                    if (_count >= palletCount)
+                    {
                         animator.SetBool("IsIdle", false);
                         animator.SetBool("IsDancing", true);
                         StartCoroutine(TriggerUpdate());
                     }
                     
+                    
                 }
+
+                #elif UNITY_ANDROID
+                if (Input.touchCount > 0 && !touched)
+                {
+                    switch (Input.GetTouch(0).phase)
+                    {
+                        //When a touch has first been detected, change the message and record the starting position
+                        case TouchPhase.Began:
+                            touched = true;
+                            break;
+
+                        case TouchPhase.Ended:
+                            // Report that the touch has ended when it ends
+                            touched = false;
+                            break;
+                        case TouchPhase.Stationary:
+                            touched = false;
+                            break;
+                        case TouchPhase.Moved:
+                            touched = false;
+                            break;
+                    }
+                    //palletController.PalletsToTruck(_count);
+                    if (_count < palletCount ) {
+                        StartCoroutine(BoxIEnumerator(_count));
+                        PlayAnim(_count);
+                        PlayerPrefs.SetInt("box", PlayerPrefs.GetInt("box", 0)+1);
+                        tmp.text = PlayerPrefs.GetInt("box", 0).ToString();
+                        if(particle.isPlaying) {
+                            particle.Stop();
+                        }
+                        particle.Play();
+                        AudioController.HitSound();
+                        _count++;
+                        if (_count == palletCount) {
+                            animator.SetBool("IsIdle", false);
+                            animator.SetBool("IsDancing", true);
+                            StartCoroutine(TriggerUpdate());
+                        }
+                        
+                    }
+                }
+                if(Input.touchCount == 0) {
+                    touched = false;
+                }
+                #endif
             }
-            if(Input.touchCount == 0) {
-                touched = false;
-            }
-            #endif
         } 
     }
 
@@ -139,6 +146,17 @@ public class EndGameScript : MonoBehaviour
             enabled = false;
         }
 
+    }
+
+    IEnumerator FailedLevel() {
+        if (!enumarator) {
+            enumarator = true;
+            yield return new WaitForSeconds(1f);
+            AudioController.LosingSound();
+            truckAnimator.SetBool("truck_start", true);
+            yield return new WaitForSeconds(5f);
+            enabled = false;
+        }
     }
 
     IEnumerator BoxIEnumerator(int index)

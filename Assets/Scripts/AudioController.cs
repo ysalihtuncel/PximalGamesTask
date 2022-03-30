@@ -8,6 +8,7 @@ public class AudioController : MonoBehaviour
     public AudioClip box_crack;
     public AudioClip hit;
     public AudioClip award;
+    public AudioClip lose;
     public AudioSource source;
 
     private static AudioController instance;
@@ -68,6 +69,19 @@ public class AudioController : MonoBehaviour
                 instance.source.Stop();
             }
             instance.source.clip = instance.award;
+            instance.source.Play();
+        }
+    }
+
+    public static void LosingSound() {
+        if (instance == null) {
+            return;
+        }
+        if (PlayerPrefs.GetInt("Sound", 1) == 1) {
+            if (instance.source.isPlaying) {
+                instance.source.Stop();
+            }
+            instance.source.clip = instance.lose;
             instance.source.Play();
         }
     }
