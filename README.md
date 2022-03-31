@@ -10,4 +10,4 @@ The box/s that hit the obstacle with red color should be shattered and the boxes
 
 
 Game Play Video:
-https://www.youtube.com/watch?v=ATxwzrgO97Y
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/ATxwzrgO97Y/0.jpg)](https://www.youtube.com/watch?v=ATxwzrgO97Y)
